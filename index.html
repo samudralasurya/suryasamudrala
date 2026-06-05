@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Surya Prakash | Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Josefin+Sans:wght@100;300;400;600&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#020b12;--s1:#04111d;--card:#071825;--border:#0d2535;
+  --cyan:#00e5ff;--teal:#00b4d8;--aqua:#48cae4;
+  --pink:#ff4d9e;--purple:#b833ff;--violet:#7c3aed;
+  --text:#e8f4f8;--muted:#4a8fa8;--dim:#0d2535;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Josefin Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.7}
+
+/* ── CANVAS ── */
+#cv{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ── SCANLINES ── */
+body::after{content:'';position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,229,255,0.012) 3px,rgba(0,229,255,0.012) 4px)}
+
+/* ── NOISE OVERLAY ── */
+body::before{content:'';position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:1.1rem 5%;
+  background:rgba(2,11,18,0.75);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(0,229,255,0.08)}
+.logo{font-family:'Righteous',cursive;font-size:1.7rem;
+  background:linear-gradient(90deg,var(--cyan),var(--pink),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 12px rgba(0,229,255,0.4))}
+.nav-links{display:flex;gap:2.4rem;list-style:none}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.68rem;letter-spacing:0.24em;text-transform:uppercase;font-weight:600;transition:color 0.2s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--cyan),var(--pink));transform:scaleX(0);transition:transform 0.3s;transform-origin:left}
+.nav-links a:hover{color:var(--cyan)}
+.nav-links a:hover::after{transform:scaleX(1)}
+
+/* ── CURSOR GLOW ── */
+.cursor-glow{position:fixed;width:300px;height:300px;border-radius:50%;pointer-events:none;z-index:1;
+  background:radial-gradient(circle,rgba(0,229,255,0.06) 0%,transparent 70%);
+  transform:translate(-50%,-50%);transition:transform 0.05s}
+
+/* ── HERO ── */
+#hero{min-height:100vh;display:flex;align-items:center;padding:0 5%;position:relative;z-index:10}
+.hero-left{flex:1;max-width:680px}
+
+.hero-tag{display:inline-flex;align-items:center;gap:0.7rem;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;
+  color:var(--cyan);border:1px solid rgba(0,229,255,0.2);padding:0.45rem 1.2rem;margin-bottom:2rem;
+  animation:fadeUp 0.6s ease both;position:relative;overflow:hidden;
+  background:rgba(0,229,255,0.03)}
+.hero-tag::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(0,229,255,0.15),transparent);
+  animation:shimmer 3s infinite}
+@keyframes shimmer{to{left:200%}}
+.dot-pulse{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.6)}}
+
+.hero-name{font-family:'Righteous',cursive;line-height:0.88;animation:fadeUp 0.7s 0.1s ease both}
+.hero-name .l1{display:block;font-size:clamp(4rem,11vw,10rem);
+  background:linear-gradient(135deg,#00e5ff 0%,#48cae4 40%,#00b4d8 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 30px rgba(0,229,255,0.25))}
+.hero-name .l2{display:block;font-size:clamp(2.4rem,6.5vw,6rem);
+  background:linear-gradient(135deg,#ff4d9e 0%,#b833ff 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 20px rgba(255,77,158,0.25))}
+
+.hero-role{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-style:italic;
+  color:var(--aqua);margin-top:1.1rem;letter-spacing:0.1em;
+  animation:fadeUp 0.7s 0.2s ease both;font-weight:300}
+.hero-desc{margin-top:1rem;font-size:0.92rem;color:var(--muted);max-width:480px;
+  font-weight:300;letter-spacing:0.04em;line-height:1.95;animation:fadeUp 0.7s 0.25s ease both}
+
+.hero-btns{margin-top:2.8rem;display:flex;gap:1.2rem;flex-wrap:wrap;animation:fadeUp 0.7s 0.35s ease both}
+.btn{padding:0.85rem 2.4rem;font-family:'Josefin Sans',sans-serif;font-size:0.65rem;
+  letter-spacing:0.22em;text-transform:uppercase;font-weight:600;text-decoration:none;
+  cursor:pointer;transition:all 0.3s;display:inline-block;position:relative;overflow:hidden}
+.btn::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.3s}
+.btn-cyan{color:var(--cyan);border:1px solid rgba(0,229,255,0.5);
+  clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+  background:rgba(0,229,255,0.04)}
+.btn-cyan::before{background:linear-gradient(90deg,rgba(0,229,255,0.1),rgba(0,229,255,0.2),rgba(0,229,255,0.1))}
+.btn-cyan:hover::before{opacity:1}
+.btn-cyan:hover{box-shadow:0 0 30px rgba(0,229,255,0.35),0 0 60px rgba(0,229,255,0.1);border-color:var(--cyan);transform:translateY(-2px)}
+.btn-pink{color:var(--pink);border:1px solid rgba(255,77,158,0.5);
+  clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+  background:rgba(255,77,158,0.04)}
+.btn-pink::before{background:linear-gradient(90deg,rgba(255,77,158,0.1),rgba(255,77,158,0.2),rgba(255,77,158,0.1))}
+.btn-pink:hover::before{opacity:1}
+.btn-pink:hover{box-shadow:0 0 30px rgba(255,77,158,0.35),0 0 60px rgba(255,77,158,0.1);border-color:var(--pink);transform:translateY(-2px)}
+
+/* scroll indicator */
+.scroll-hint{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.5rem;animation:fadeUp 1s 1s ease both}
+.scroll-line{width:1px;height:60px;background:linear-gradient(180deg,var(--cyan),transparent);animation:scrollPulse 1.8s infinite}
+@keyframes scrollPulse{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.scroll-txt{font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--muted)}
+
+/* ── SECTIONS ── */
+.section{position:relative;z-index:10;padding:7rem 5%}
+.sec-eye{font-size:0.58rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--pink);font-weight:600;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.7rem}
+.sec-eye::before{content:'';width:24px;height:1px;background:var(--pink)}
+.sec-title{font-family:'Righteous',cursive;font-size:clamp(2.4rem,5.5vw,4.5rem);line-height:1;margin-bottom:0.5rem;
+  background:linear-gradient(90deg,var(--cyan) 0%,var(--aqua) 60%,var(--teal) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sec-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;color:var(--muted);margin-bottom:3rem;font-weight:300}
+.divider{width:80px;height:1px;margin-bottom:3.5rem;position:relative}
+.divider::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--cyan),var(--pink),var(--purple))}
+.divider::after{content:'';position:absolute;left:0;top:-2px;width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+
+/* ── ABOUT ── */
+#about{background:linear-gradient(180deg,rgba(4,17,29,0.96) 0%,rgba(2,11,18,0.98) 100%)}
+.about-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:5rem;align-items:start}
+.about-prose p{color:var(--muted);font-size:0.93rem;font-weight:300;margin-bottom:1.1rem;letter-spacing:0.04em;line-height:1.95}
+.about-prose strong{color:var(--text);font-weight:600}
+.about-stats{display:flex;gap:3rem;margin-top:2.8rem;flex-wrap:wrap}
+.stat-num{font-family:'Righteous',cursive;font-size:3.5rem;
+  background:linear-gradient(135deg,var(--cyan),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;
+  filter:drop-shadow(0 0 12px rgba(0,229,255,0.3))}
+.stat-lbl{font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.info-stack{display:flex;flex-direction:column;gap:1rem}
+.info-block{background:rgba(7,24,37,0.8);border:1px solid var(--dim);
+  padding:1.6rem 1.8rem;position:relative;overflow:hidden;
+  transition:border-color 0.3s,transform 0.3s}
+.info-block:hover{border-color:rgba(0,229,255,0.25);transform:translateX(-4px)}
+.info-block::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--cyan),var(--pink))}
+.info-block::after{content:'';position:absolute;top:0;right:0;width:80px;height:80px;
+  background:radial-gradient(circle at 100% 0%,rgba(0,229,255,0.07),transparent 70%)}
+.info-block h4{font-size:0.57rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--cyan);margin-bottom:1rem;font-weight:600}
+.info-row{font-size:0.82rem;color:var(--muted);padding:0.35rem 0;border-bottom:1px solid rgba(13,37,53,0.8);letter-spacing:0.04em}
+.info-row:last-child{border-bottom:none}
+.info-row strong{color:var(--aqua);font-weight:600}
+
+/* ── EDUCATION ── */
+#education{background:var(--bg)}
+.edu-list{display:flex;flex-direction:column;gap:3px}
+.edu-card{background:var(--card);border:1px solid var(--dim);border-left:3px solid transparent;
+  padding:1.9rem 2.2rem;display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:1rem;transition:all 0.3s;position:relative;overflow:hidden;cursor:default}
+.edu-card::before{content:'';position:absolute;inset:0;opacity:0;
+  background:linear-gradient(90deg,rgba(0,229,255,0.04),transparent 60%);transition:opacity 0.3s}
+.edu-card:hover{border-left-color:var(--cyan);background:#081e2e}
+.edu-card:hover::before{opacity:1}
+.edu-card:nth-child(2):hover{border-left-color:var(--pink)}
+.edu-card:nth-child(2):hover::before{background:linear-gradient(90deg,rgba(255,77,158,0.04),transparent 60%)}
+.edu-card:nth-child(3):hover{border-left-color:var(--purple)}
+.edu-card:nth-child(3):hover::before{background:linear-gradient(90deg,rgba(184,51,255,0.04),transparent 60%)}
+.edu-num{font-family:'Righteous',cursive;font-size:5rem;position:absolute;right:1.5rem;
+  opacity:0.04;line-height:1;color:var(--cyan);pointer-events:none;top:50%;transform:translateY(-50%)}
+.edu-deg{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--text);margin-bottom:0.35rem;letter-spacing:0.02em}
+.edu-school{font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.edu-right{text-align:right;position:relative;z-index:1}
+.edu-yr{font-size:0.58rem;letter-spacing:0.2em;color:var(--cyan);font-weight:600;text-transform:uppercase;margin-bottom:0.3rem}
+.edu-score{font-family:'Righteous',cursive;font-size:3rem;
+  background:linear-gradient(135deg,var(--cyan),var(--aqua));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.edu-lbl{font-size:0.56rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted)}
+
+/* ── SKILLS ── */
+#skills{background:linear-gradient(180deg,rgba(4,17,29,0.97) 0%,rgba(2,11,18,0.99) 100%)}
+.skills-wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:5rem}
+.skill-item{margin-bottom:1.6rem}
+.skill-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.6rem}
+.skill-name{font-size:0.8rem;letter-spacing:0.12em;color:var(--text);font-weight:600;text-transform:uppercase}
+.skill-pct{font-family:'Righteous',cursive;font-size:0.9rem;color:var(--cyan);
+  filter:drop-shadow(0 0 6px rgba(0,229,255,0.5))}
+.skill-track{height:1px;background:var(--dim);position:relative;overflow:visible}
+.skill-fill{height:1px;background:linear-gradient(90deg,var(--cyan),var(--pink));position:relative;transition:width 1s ease}
+.skill-fill::after{content:'';position:absolute;right:-3px;top:50%;transform:translateY(-50%);
+  width:7px;height:7px;border-radius:50%;background:var(--pink);box-shadow:0 0 10px var(--pink),0 0 20px rgba(255,77,158,0.5)}
+.tag-col h3{font-size:0.56rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--cyan);
+  margin-bottom:1rem;margin-top:2.2rem;font-weight:600;display:flex;align-items:center;gap:0.6rem}
+.tag-col h3::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(0,229,255,0.3),transparent)}
+.tag-col h3:first-child{margin-top:0}
+.tags{display:flex;flex-wrap:wrap;gap:0.5rem}
+.tag{font-size:0.58rem;padding:0.38rem 0.9rem;border:1px solid var(--dim);color:var(--muted);
+  letter-spacing:0.1em;text-transform:uppercase;font-weight:600;transition:all 0.25s;cursor:default}
+.tag:hover{border-color:rgba(0,229,255,0.4);color:var(--cyan);background:rgba(0,229,255,0.05);
+  box-shadow:0 0 12px rgba(0,229,255,0.15)}
+.tag.hl{border-color:rgba(0,229,255,0.25);color:var(--aqua);background:rgba(0,229,255,0.04)}
+
+/* ── PROJECTS ── */
+#projects{background:var(--bg)}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:3px}
+.proj-card{background:var(--card);border:1px solid var(--dim);overflow:hidden;
+  transition:all 0.35s;position:relative;cursor:default}
+.proj-card::after{content:'';position:absolute;inset:0;opacity:0;
+  background:linear-gradient(135deg,rgba(0,229,255,0.04),rgba(255,77,158,0.04));
+  transition:opacity 0.3s;z-index:0}
+.proj-card:hover{transform:translateY(-8px);border-color:rgba(0,229,255,0.35);
+  box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 40px rgba(0,229,255,0.08)}
+.proj-card:hover::after{opacity:1}
+
+.proj-thumb{height:220px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;border-bottom:1px solid var(--dim)}
+.proj-thumb.t1{background:radial-gradient(ellipse at 30% 50%,#001a0a,#020b12)}
+.proj-thumb.t2{background:radial-gradient(ellipse at 70% 50%,#0a001a,#020b12)}
+.proj-glyph{font-size:5.5rem;position:relative;z-index:1;
+  filter:drop-shadow(0 0 30px rgba(0,229,255,0.25)) drop-shadow(0 0 60px rgba(255,77,158,0.15));
+  animation:floatGlyph 3s ease-in-out infinite}
+@keyframes floatGlyph{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.proj-grid-line{position:absolute;inset:0;opacity:0.06;
+  background-image:linear-gradient(var(--cyan) 1px,transparent 1px),linear-gradient(90deg,var(--cyan) 1px,transparent 1px);
+  background-size:30px 30px}
+.proj-corner{position:absolute;width:20px;height:20px;border-color:var(--cyan);border-style:solid;opacity:0.5}
+.proj-corner.tl{top:12px;left:12px;border-width:2px 0 0 2px}
+.proj-corner.tr{top:12px;right:12px;border-width:2px 2px 0 0}
+.proj-corner.bl{bottom:12px;left:12px;border-width:0 0 2px 2px}
+.proj-corner.br{bottom:12px;right:12px;border-width:0 2px 2px 0}
+
+.proj-body{padding:2rem;position:relative;z-index:1}
+.proj-type{font-size:0.56rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--pink);font-weight:600;margin-bottom:0.6rem;display:flex;align-items:center;gap:0.5rem}
+.proj-type::before{content:'';width:14px;height:1px;background:var(--pink)}
+.proj-title{font-family:'Righteous',cursive;font-size:2.1rem;letter-spacing:0.04em;margin-bottom:1rem;
+  background:linear-gradient(90deg,var(--cyan),var(--aqua));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.proj-desc{font-family:'Cormorant Garamond',serif;font-size:1.02rem;color:var(--muted);
+  font-weight:300;line-height:1.85;margin-bottom:1.4rem;font-style:italic}
+.proj-techs{display:flex;flex-wrap:wrap;gap:0.45rem}
+.tech{font-size:0.56rem;padding:0.3rem 0.75rem;border:1px solid rgba(0,229,255,0.2);
+  color:var(--cyan);letter-spacing:0.12em;text-transform:uppercase;font-weight:600;
+  background:rgba(0,229,255,0.04);transition:all 0.2s}
+.tech:hover{background:rgba(0,229,255,0.1);box-shadow:0 0 10px rgba(0,229,255,0.2)}
+
+/* ── CONTACT ── */
+#contact{background:linear-gradient(180deg,rgba(4,17,29,0.98) 0%,rgba(2,11,18,1) 100%);text-align:center}
+.contact-wrap{max-width:620px;margin:0 auto}
+.contact-wrap p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.15rem;
+  color:var(--muted);margin-bottom:3.5rem;line-height:1.85}
+.clinks{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
+.clink{display:inline-flex;align-items:center;gap:0.7rem;text-decoration:none;
+  border:1px solid var(--dim);padding:0.9rem 1.8rem;font-size:0.62rem;
+  letter-spacing:0.2em;text-transform:uppercase;font-weight:600;transition:all 0.3s;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  position:relative;overflow:hidden}
+.clink::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.3s;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent)}
+.clink:hover::before{opacity:1}
+.clink.c1{color:var(--cyan);border-color:rgba(0,229,255,0.3)}
+.clink.c1:hover{background:rgba(0,229,255,0.08);box-shadow:0 0 24px rgba(0,229,255,0.25),0 0 50px rgba(0,229,255,0.08);transform:translateY(-3px)}
+.clink.c2{color:var(--pink);border-color:rgba(255,77,158,0.3)}
+.clink.c2:hover{background:rgba(255,77,158,0.08);box-shadow:0 0 24px rgba(255,77,158,0.25);transform:translateY(-3px)}
+.clink.c3{color:var(--purple);border-color:rgba(184,51,255,0.3)}
+.clink.c3:hover{background:rgba(184,51,255,0.08);box-shadow:0 0 24px rgba(184,51,255,0.25);transform:translateY(-3px)}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--dim);padding:2.2rem 5%;display:flex;justify-content:space-between;
+  align-items:center;color:var(--muted);font-size:0.58rem;letter-spacing:0.18em;
+  text-transform:uppercase;flex-wrap:wrap;gap:1rem;position:relative;z-index:10;
+  background:rgba(2,11,18,0.98)}
+.footer-logo{font-family:'Righteous',cursive;font-size:1.1rem;
+  background:linear-gradient(90deg,var(--cyan),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── GLITCH TEXT ── */
+.glitch{position:relative}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;
+  background:linear-gradient(135deg,#00e5ff 0%,#48cae4 40%,#00b4d8 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.glitch::before{animation:glitch1 3.5s infinite;clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%)}
+.glitch::after{animation:glitch2 3.5s infinite;clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%)}
+@keyframes glitch1{0%,90%,100%{transform:translate(0)}91%{transform:translate(-3px,1px)}93%{transform:translate(3px,-1px)}95%{transform:translate(-2px,0)}}
+@keyframes glitch2{0%,88%,100%{transform:translate(0)}89%{transform:translate(3px,-1px)}92%{transform:translate(-3px,2px)}94%{transform:translate(2px,0)}}
+
+@media(max-width:768px){.about-grid,.skills-wrap{grid-template-columns:1fr}.nav-links{gap:1.2rem}.hero-name .l1{font-size:3.5rem}.hero-name .l2{font-size:2.2rem}}
+</style>
+</head>
+<body>
+
+<div id="cv"><canvas id="three-canvas" style="width:100%;height:100%"></canvas></div>
+<div class="cursor-glow" id="cg"></div>
+
+<nav>
+  <div class="logo">SP.</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-tag"><span class="dot-pulse"></span>Open to Opportunities &nbsp;&#9670;&nbsp; Andhra Pradesh, India</div>
+    <h1 class="hero-name">
+      <span class="l1 glitch" data-text="SURYA">SURYA</span>
+      <span class="l2">PRAKASH</span>
+    </h1>
+    <p class="hero-role">CSE Engineer &nbsp;&mdash;&nbsp; AI Specialist &nbsp;&mdash;&nbsp; Web Developer</p>
+    <p class="hero-desc">B.Tech graduate in Computer Science & Engineering with AI — building web applications that bridge technology and real human needs across India.</p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn btn-cyan">&#9670; View Projects</a>
+      <a href="#contact" class="btn btn-pink">&#9670; Contact Me</a>
+    </div>
+  </div>
+  <div class="scroll-hint"><span class="scroll-txt">Scroll</span><div class="scroll-line"></div></div>
+</section>
+
+<!-- ══ ABOUT ══ -->
+<section id="about" class="section reveal">
+  <p class="sec-eye">Who I Am</p>
+  <h2 class="sec-title">About Me</h2>
+  <p class="sec-sub">Engineer by degree, builder by passion</p>
+  <div class="divider"></div>
+  <div class="about-grid">
+    <div class="about-prose">
+      <p>I'm <strong>Samudrala Deva Venkata Surya Prakash</strong>, a Computer Science & Engineering graduate specialising in <strong>Artificial Intelligence</strong> from Parul Institute of Engineering and Technology, class of 2024.</p>
+      <p>I build full-stack web applications that solve real problems — from empowering farmers to sell directly to consumers, to streamlining rental housing management with secure admin verification systems.</p>
+      <p>I thrive in team environments and approach every challenge with a <strong>positive mindset</strong>, adaptability, and the relentless drive to grow every single day.</p>
+      <div class="about-stats">
+        <div><div class="stat-num">2</div><div class="stat-lbl">Projects Built</div></div>
+        <div><div class="stat-num">3+</div><div class="stat-lbl">Tech Skills</div></div>
+        <div><div class="stat-num">2024</div><div class="stat-lbl">Graduate</div></div>
+      </div>
+    </div>
+    <div class="info-stack">
+      <div class="info-block">
+        <h4>&#9670; Personal Info</h4>
+        <div class="info-row"><strong>Name &nbsp;</strong>Samudrala Deva Venkata Surya Prakash</div>
+        <div class="info-row"><strong>Location &nbsp;</strong>Potlapadu, Prakasam Dist., Andhra Pradesh</div>
+        <div class="info-row"><strong>Email &nbsp;</strong>samudralasurya143@gmail.com</div>
+        <div class="info-row"><strong>Phone &nbsp;</strong>+91 7981978823</div>
+        <div class="info-row"><strong>Degree &nbsp;</strong>B.Tech — CSE with AI</div>
+      </div>
+      <div class="info-block" style="--accent:var(--pink)">
+        <h4 style="color:var(--pink)">&#9670; Languages & Interests</h4>
+        <div class="info-row"><strong>Languages &nbsp;</strong>Telugu &nbsp;&middot;&nbsp; English</div>
+        <div class="info-row"><strong>Hobbies &nbsp;</strong>Internet &nbsp;&middot;&nbsp; Cricket &nbsp;&middot;&nbsp; Swimming</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ EDUCATION ══ -->
+<section id="education" class="section reveal">
+  <p class="sec-eye">Academic Background</p>
+  <h2 class="sec-title">Education</h2>
+  <p class="sec-sub">The foundations that shaped me</p>
+  <div class="divider"></div>
+  <div class="edu-list">
+    <div class="edu-card">
+      <div class="edu-num">01</div>
+      <div><div class="edu-deg">B.Tech — Computer Science & Engineering (AI)</div><div class="edu-school">Parul Institute of Engineering and Technology</div></div>
+      <div class="edu-right"><div class="edu-yr">2024</div><div class="edu-score">6.65</div><div class="edu-lbl">CGPA</div></div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-num">02</div>
+      <div><div class="edu-deg">Intermediate — MPC</div><div class="edu-school">Katamraju Junior College</div></div>
+      <div class="edu-right"><div class="edu-yr">2020</div><div class="edu-score">5.2</div><div class="edu-lbl">CGPA</div></div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-num">03</div>
+      <div><div class="edu-deg">SSC — 10th Grade</div><div class="edu-school">St Joseph's High School</div></div>
+      <div class="edu-right"><div class="edu-yr">2018</div><div class="edu-score">9.3</div><div class="edu-lbl">GPA</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SKILLS ══ -->
+<section id="skills" class="section reveal">
+  <p class="sec-eye">Capabilities</p>
+  <h2 class="sec-title">Skills</h2>
+  <p class="sec-sub">Technologies I work with</p>
+  <div class="divider"></div>
+  <div class="skills-wrap">
+    <div>
+      <div class="skill-item"><div class="skill-head"><span class="skill-name">HTML & CSS</span><span class="skill-pct">80%</span></div><div class="skill-track"><div class="skill-fill" style="width:80%"></div></div></div>
+      <div class="skill-item"><div class="skill-head"><span class="skill-name">Python</span><span class="skill-pct">70%</span></div><div class="skill-track"><div class="skill-fill" style="width:70%"></div></div></div>
+      <div class="skill-item"><div class="skill-head"><span class="skill-name">SQL / MySQL</span><span class="skill-pct">70%</span></div><div class="skill-track"><div class="skill-fill" style="width:70%"></div></div></div>
+      <div class="skill-item"><div class="skill-head"><span class="skill-name">Java / JSP / JDBC</span><span class="skill-pct">60%</span></div><div class="skill-track"><div class="skill-fill" style="width:60%"></div></div></div>
+      <div class="skill-item"><div class="skill-head"><span class="skill-name">JavaScript</span><span class="skill-pct">55%</span></div><div class="skill-track"><div class="skill-fill" style="width:55%"></div></div></div>
+    </div>
+    <div class="tag-col">
+      <h3>Strengths</h3>
+      <div class="tags">
+        <span class="tag hl">Time Management</span><span class="tag hl">Adaptability</span>
+        <span class="tag hl">Hard Working</span><span class="tag hl">Quick Learner</span><span class="tag hl">Punctuality</span>
+      </div>
+      <h3>Interpersonal</h3>
+      <div class="tags">
+        <span class="tag">Team Work</span><span class="tag">Positive Attitude</span><span class="tag">Positive Mindset</span>
+      </div>
+      <h3>Tools & Stack</h3>
+      <div class="tags">
+        <span class="tag">Apache Tomcat</span><span class="tag">JDBC</span><span class="tag">MySQL</span><span class="tag">Git</span><span class="tag">JSP</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROJECTS ══ -->
+<section id="projects" class="section reveal">
+  <p class="sec-eye">Portfolio</p>
+  <h2 class="sec-title">Projects</h2>
+  <p class="sec-sub">Things I built that actually work</p>
+  <div class="divider"></div>
+  <div class="projects-grid">
+    <div class="proj-card">
+      <div class="proj-thumb t1">
+        <div class="proj-grid-line"></div>
+        <div class="proj-corner tl"></div><div class="proj-corner tr"></div>
+        <div class="proj-corner bl"></div><div class="proj-corner br"></div>
+        <span class="proj-glyph">🥦</span>
+      </div>
+      <div class="proj-body">
+        <div class="proj-type">E-Commerce Platform</div>
+        <div class="proj-title">Veggie Wagon</div>
+        <p class="proj-desc">An e-commerce platform empowering farmers to sell directly to consumers, increasing annual revenue and making organic produce accessible at the lowest possible cost.</p>
+        <div class="proj-techs">
+          <span class="tech">HTML</span><span class="tech">CSS</span><span class="tech">JavaScript</span>
+          <span class="tech">JSP</span><span class="tech">MySQL</span><span class="tech">JDBC</span><span class="tech">Tomcat</span>
+        </div>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-thumb t2">
+        <div class="proj-grid-line"></div>
+        <div class="proj-corner tl"></div><div class="proj-corner tr"></div>
+        <div class="proj-corner bl"></div><div class="proj-corner br"></div>
+        <span class="proj-glyph">🏠</span>
+      </div>
+      <div class="proj-body">
+        <div class="proj-type">Full-Stack Web App</div>
+        <div class="proj-title">Rental Housing</div>
+        <p class="proj-desc">A full-stack platform streamlining the rental process for renters, owners, and admins — with owner verification, listings, booking management, and a secure admin panel.</p>
+        <div class="proj-techs">
+          <span class="tech">HTML</span><span class="tech">CSS</span><span class="tech">JavaScript</span>
+          <span class="tech">Full-Stack</span><span class="tech">Admin Panel</span><span class="tech">Auth</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact" class="section reveal">
+  <div class="contact-wrap">
+    <p class="sec-eye" style="justify-content:center">Reach Out</p>
+    <h2 class="sec-title" style="text-align:center">Let's Connect</h2>
+    <div class="divider" style="margin:0 auto 2.5rem"></div>
+    <p>I'm actively seeking opportunities. Whether you have a job offer, a collaboration idea, or simply want to say hello — I'm always happy to hear from you.</p>
+    <div class="clinks">
+      <a href="mailto:samudralasurya143@gmail.com" class="clink c1">&#9993; Email</a>
+      <a href="tel:+917981978823" class="clink c2">&#9742; Call</a>
+      <a href="https://github.com/samudralasurya" target="_blank" class="clink c3">&#11835; GitHub</a>
+      <a href="https://linkedin.com/in/samudralasurya" target="_blank" class="clink c1">&#9654; LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">SP.</div>
+  <span>&#169; 2025 Samudrala Deva Venkata Surya Prakash</span>
+  <span>HTML &middot; CSS &middot; Three.js</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ── CURSOR GLOW ──
+const cg=document.getElementById('cg');
+document.addEventListener('mousemove',e=>{cg.style.left=e.clientX+'px';cg.style.top=e.clientY+'px'});
+
+// ── SCROLL REVEAL ──
+const reveals=document.querySelectorAll('.reveal');
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}})},{threshold:0.12});
+reveals.forEach(r=>io.observe(r));
+
+// ── THREE.JS SCENE ──
+(function(){
+  const canvas=document.getElementById('three-canvas');
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(window.innerWidth,window.innerHeight);
+  renderer.setClearColor(0x000000,0);
+  renderer.shadowMap.enabled=true;
+
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(52,window.innerWidth/window.innerHeight,0.1,100);
+  camera.position.set(0,0,7);
+
+  // Lighting
+  scene.add(new THREE.AmbientLight(0x001122,2));
+  const cL=new THREE.PointLight(0x00e5ff,6,20); cL.position.set(5,3,3); scene.add(cL);
+  const pL=new THREE.PointLight(0xff4d9e,5,20); pL.position.set(-5,-3,2); scene.add(pL);
+  const vL=new THREE.PointLight(0xb833ff,3,18); vL.position.set(0,5,-3); scene.add(vL);
+  const wL=new THREE.PointLight(0x00ffcc,2,15); wL.position.set(0,-5,2); scene.add(wL);
+
+  // ── MAIN: Torus Knot (3,5 for a more complex star-shape) ──
+  const kGeo=new THREE.TorusKnotGeometry(1.05,0.3,200,24,3,5);
+  const kMat=new THREE.MeshStandardMaterial({color:0x030d18,metalness:1,roughness:0.04,emissive:0x001a2e,emissiveIntensity:0.6});
+  const knot=new THREE.Mesh(kGeo,kMat);
+  knot.position.set(2.4,0.2,0);
+  scene.add(knot);
+
+  // Wireframe — two layers, different colours
+  const wf1=new THREE.Mesh(kGeo,new THREE.MeshBasicMaterial({color:0x00e5ff,wireframe:true,transparent:true,opacity:0.1}));
+  wf1.position.copy(knot.position); wf1.scale.set(1.005,1.005,1.005); scene.add(wf1);
+  const wf2=new THREE.Mesh(kGeo,new THREE.MeshBasicMaterial({color:0xff4d9e,wireframe:true,transparent:true,opacity:0.07}));
+  wf2.position.copy(knot.position); wf2.scale.set(1.012,1.012,1.012); scene.add(wf2);
+
+  // Rings (3 rings, different radii, axes, colours)
+  const ringDefs=[
+    {r:1.75,t:0.009,c:0x00e5ff,rx:Math.PI/2,ry:0,o:0.55},
+    {r:2.05,t:0.007,c:0xff4d9e,rx:Math.PI/2.5,ry:0.4,o:0.4},
+    {r:2.35,t:0.006,c:0xb833ff,rx:Math.PI/3,ry:-0.6,o:0.3},
+  ];
+  const rings=ringDefs.map(d=>{
+    const m=new THREE.Mesh(new THREE.TorusGeometry(d.r,d.t,8,140),
+      new THREE.MeshBasicMaterial({color:d.c,transparent:true,opacity:d.o}));
+    m.position.copy(knot.position); m.rotation.x=d.rx; m.rotation.y=d.ry;
+    scene.add(m); return m;
+  });
+
+  // Orbiting spheres (5 orbs at different speeds/radii)
+  const orbDefs=[
+    {r:0.12,c:0xff4d9e,e:0xff4d9e,or:2.6,sp:0.9,ph:0},
+    {r:0.08,c:0x00e5ff,e:0x00e5ff,or:2.0,sp:1.4,ph:1.2},
+    {r:0.06,c:0xb833ff,e:0xb833ff,or:3.1,sp:0.6,ph:2.5},
+    {r:0.05,c:0x00ffcc,e:0x00ffcc,or:1.6,sp:2.0,ph:0.8},
+    {r:0.07,c:0xffcc00,e:0xffcc00,or:2.8,sp:1.1,ph:1.8},
+  ];
+  const orbs=orbDefs.map(d=>{
+    const m=new THREE.Mesh(new THREE.SphereGeometry(d.r,16,16),
+      new THREE.MeshStandardMaterial({color:d.c,emissive:d.e,emissiveIntensity:1,metalness:0.9,roughness:0.05}));
+    scene.add(m); return {...d,mesh:m};
+  });
+
+  // DNA-like helix of small dots around the knot
+  const helixGeo=new THREE.BufferGeometry();
+  const hCount=60; const hPos=new Float32Array(hCount*3);
+  for(let i=0;i<hCount;i++){
+    const a=i/hCount*Math.PI*6; const rad=2.2;
+    hPos[i*3]=knot.position.x+Math.cos(a)*rad;
+    hPos[i*3+1]=(i/hCount-0.5)*4;
+    hPos[i*3+2]=Math.sin(a)*rad*0.4;
+  }
+  helixGeo.setAttribute('position',new THREE.BufferAttribute(hPos,3));
+  scene.add(new THREE.Points(helixGeo,new THREE.PointsMaterial({color:0x00e5ff,size:0.06,transparent:true,opacity:0.4})));
+
+  // Background particles — 3 colour groups
+  function makePts(n,col,spread,zRange){
+    const g=new THREE.BufferGeometry(); const p=new Float32Array(n*3);
+    for(let i=0;i<n;i++){p[i*3]=(Math.random()-.5)*spread;p[i*3+1]=(Math.random()-.5)*spread;p[i*3+2]=(Math.random()-.5)*zRange-3}
+    g.setAttribute('position',new THREE.BufferAttribute(p,3));
+    return new THREE.Points(g,new THREE.PointsMaterial({color:col,size:0.04,transparent:true,opacity:0.6}));
+  }
+  const pts1=makePts(100,0x00e5ff,24,12); scene.add(pts1);
+  const pts2=makePts(80,0xff4d9e,20,10); scene.add(pts2);
+  const pts3=makePts(60,0xb833ff,18,10); scene.add(pts3);
+
+  // Grid floor (distant, subtle)
+  const gMat=new THREE.MeshBasicMaterial({color:0x00e5ff,wireframe:true,transparent:true,opacity:0.04});
+  const grid=new THREE.Mesh(new THREE.PlaneGeometry(30,30,20,20),gMat);
+  grid.rotation.x=-Math.PI/2; grid.position.y=-4; scene.add(grid);
+
+  let mx=0,my=0;
+  document.addEventListener('mousemove',e=>{mx=(e.clientX/window.innerWidth-.5)*2;my=-(e.clientY/window.innerHeight-.5)*2});
+  window.addEventListener('resize',()=>{camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight)});
+
+  const clock=new THREE.Clock();
+  function animate(){
+    requestAnimationFrame(animate);
+    const t=clock.getElapsedTime();
+
+    // Knot
+    knot.rotation.x=t*0.2+my*0.2;
+    knot.rotation.y=t*0.28+mx*0.3;
+    knot.position.y=Math.sin(t*0.65)*0.22;
+    wf1.rotation.copy(knot.rotation); wf1.position.y=knot.position.y;
+    wf2.rotation.x=knot.rotation.x+0.3; wf2.rotation.y=knot.rotation.y-0.2; wf2.position.y=knot.position.y;
+
+    // Rings
+    rings[0].rotation.z=t*0.18; rings[0].position.y=knot.position.y;
+    rings[1].rotation.z=-t*0.22; rings[1].rotation.x=Math.PI/2.5+Math.sin(t*0.3)*0.1; rings[1].position.y=knot.position.y;
+    rings[2].rotation.z=t*0.14; rings[2].rotation.y=-t*0.08; rings[2].position.y=knot.position.y;
+
+    // Orbiting spheres
+    orbs.forEach(o=>{
+      const a=t*o.sp+o.ph; const yr=o.or*0.5;
+      o.mesh.position.set(knot.position.x+Math.cos(a)*o.or, Math.sin(a*1.3)*yr+knot.position.y, Math.sin(a)*o.or*0.45);
+    });
+
+    // Lights orbit
+    cL.position.x=Math.cos(t*0.5)*6; cL.position.z=Math.sin(t*0.5)*5;
+    pL.position.x=Math.cos(t*0.5+Math.PI)*5; pL.position.z=Math.sin(t*0.5+Math.PI)*5;
+    vL.position.y=Math.sin(t*0.4)*5; vL.position.x=Math.cos(t*0.3)*3;
+
+    // Camera drift
+    camera.position.x+=(mx*0.4-camera.position.x)*0.035;
+    camera.position.y+=(my*0.4-camera.position.y)*0.035;
+    camera.lookAt(scene.position);
+
+    // Particles drift
+    pts1.rotation.y=t*0.012; pts2.rotation.y=-t*0.009; pts3.rotation.y=t*0.007;
+    pts1.rotation.x=t*0.006; pts3.rotation.x=-t*0.005;
+
+    renderer.render(scene,camera);
+  }
+  animate();
+})();
+</script>
+</body>
+</html>
